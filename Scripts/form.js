@@ -6,6 +6,7 @@ const formNotWorkingTemplate = document.getElementById("formNotWorkingTemplate")
 
 var tryCount = 0;
 var tryThreshold = 2;
+var notWorkingButtonExists = false;
 
 const validateEmail = (email) => {
   return email.match(
@@ -55,9 +56,10 @@ function checkForm() {
     /* Attempts to submit form through API, if it fails then will switch to an embed of a google form. */
     if (!submitForm(firstName, maidenName, lastName, email, phone)) {
       tryCount+=1;
-      if (tryCount >= tryThreshold) {
+      if (tryCount >= tryThreshold && !notWorkingButtonExists) {
         let template = formNotWorkingTemplate.content.cloneNode(true);
-        formContainer.appendChild(template)
+        formContainer.appendChild(template);
+        notWorkingButtonExists = true;
       }
       alert("Something went wrong! Please fill out this alternative form.")
       useFormEmbed();
@@ -70,9 +72,10 @@ function checkForm() {
   } else {
     /* If user enterse data incorrectly or not at all, highlights the input in red. */
     tryCount+=1;
-    if (tryCount >= tryThreshold) {
+    if (tryCount >= tryThreshold && !notWorkingButtonExists) {
       let template = formNotWorkingTemplate.content.cloneNode(true);
-      formContainer.appendChild(template)
+      formContainer.appendChild(template);
+      notWorkingButtonExists = true;
     }
   }
 }
@@ -80,7 +83,7 @@ function checkForm() {
 
 /* Uses SheetsDB API to add responses to a google sheet */
 function submitForm(firstName, maidenName, lastName, email, phone) {
-  fetch('https://sheetdb.io/api/v1/tfs4ekwkf7ny6?sheet=responses', {
+  fetch('https://sheetdb.io/api/v1/w5s9cpcgstmso?sheet=responses', {
     method: 'POST',
     headers: {
         'Accept': 'application/json',
